@@ -1,0 +1,142 @@
+<html>
+
+<style>
+    .carta {
+        background-color: burlywood;
+        border: 1px solid black;
+        float: left;
+        height: 250px;
+        width: 250px;
+        margin: 10px;
+        font-size: 50pt;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .cartaConcluida {
+        background-color: white;
+        border: 1px solid black;
+        float: left;
+        height: 250px;
+        width: 250px;
+        margin: 10px;
+    }
+
+    ;
+</style>
+<script>
+
+    //jogo possui 3 niveis de dificuldade
+
+
+    //carrega as cartas no vetor
+    var numeroCartas = 5;
+    var cartas = [];
+    var cartasMisturadas = [];
+
+    for (var i = numeroCartas; i > 0; i--) {
+        cartas.push(i + 'A');
+        cartas.push(i + 'B');
+    }
+
+    document.write("<BR>");
+
+    //cria um vetor de cartas misturadas
+
+    cartas.sort(() => Math.random() - 0.5);
+
+    var cartaAnterior = "";
+
+    cartaAnterior = 0;
+
+    cartasConcluidas = [];
+    maximoErros = 5;
+    erros = 0;
+    comecou = false;
+
+    //LOGICA
+    function inicio() {
+        
+        for ( var i = 0 ; i < cartas.length ; i++ ) {
+            var elem = document.getElementById(cartas[i]);
+            elem.innerHTML = '';
+        }
+        comecou = true;
+
+    }
+
+    function jogo(c) {
+
+        var elem = document.getElementById(c);
+
+        cartaRaiz = (c.substring(0, 1));
+
+        if (!comecou) {
+
+            alert("MEMORISE AS CARTAS E CLIQUE EM COMECAR ANTES");
+
+        } else if (erros > maximoErros) {
+
+            alert("VOCE ERROU MAIS DE " + maximoErros + " FIM DE JOGO!");
+
+        } else if (!cartasConcluidas.includes(cartaRaiz)) {
+
+            elem.style.backgroundColor = 'blue';
+            elem.innerHTML = cartaRaiz;
+
+            if (cartaAnterior == 0) {
+                cartaAnterior = c;
+            } else if (cartaAnterior == c) {
+                alert("mesma carta");
+            } else {
+                if (cartaAnterior.substring(0, 1) == cartaRaiz) {
+                    //alert('iguais ');
+                    document.getElementById(c).style.backgroundColor = 'gray';
+                    document.getElementById(cartaAnterior).style.backgroundColor = 'gray';
+                    cartasConcluidas.push(cartaAnterior.substring(0, 1));
+                    cartaAnterior = 0;
+                } else {
+                    erros++;
+                    alert(erros + " erros! ");
+                    document.getElementById(c).style.backgroundColor = 'burlywood';
+                    document.getElementById(c).innerHTML = "";
+                    document.getElementById(cartaAnterior).style.backgroundColor = 'burlywood';
+                    document.getElementById(cartaAnterior).innerHTML = "";
+                    cartaAnterior = 0;
+                    
+                }
+            }
+
+            if (cartasConcluidas.length >= numeroCartas) {
+                //VITORIA
+                document.getElementById("inicio").hidden = true;
+                document.write("PARABENS VOCE VENCEU!<BR/>");
+                document.write("<BUTTON onclick='location.reload();'>REINICIAR</BUTTON>");
+
+            }
+        }
+
+    }
+
+    //exibe as cartas
+    var corpo = "";
+    for (var i = cartas.length - 1; i >= 0; i--) {
+
+        corpo += " <div onclick='jogo(`" + cartas[i] + "`)' id='" + cartas[i] + "' class='carta'> " + cartas[i].substring(0, 1) + " </div> ";
+
+    }
+    
+    var colunas = 4;
+
+</script>
+
+
+<div style="width: 100%; display: table;">
+    <div><button id="inicio" onclick='inicio()'>COMECAR</button></div>
+    <script>
+        document.write(corpo);
+    </script>
+
+</div>
+
+
+</html>
